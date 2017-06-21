@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.srivigneshponmudi.retrofit.Data.Model.Item;
@@ -13,9 +12,9 @@ import com.example.srivigneshponmudi.retrofit.Data.remote.SOService;
 
 import java.util.ArrayList;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,27 +46,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadAnswers() {
-        mService.getAnswers().enqueue(new Callback<SOAnswersResponse>() {
-            @Override
-            public void onResponse(Call<SOAnswersResponse> call, Response<SOAnswersResponse> response) {
+        mService.getAnswers().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SOAnswersResponse>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-                if(response.isSuccessful()) {
-                    mAdapter.updateAnswers(response.body().getItems());
-                    Log.d("MainActivity", "posts loaded from API");
-                }else {
-                    int statusCode  = response.code();
-                    // handle request errors depending on status code
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-            @Override
-            public void onFailure(Call<SOAnswersResponse> call, Throwable t) {
-
-                Log.d("MainActivity", "error loading from API");
-
-            }
-        });
+                    @Override
+                    public void onNext(SOAnswersResponse soAnswersResponse) {
+                        mAdapter.updateAnswers(soAnswersResponse.getItems());
+                    }
+                });
     }
-
 
 }

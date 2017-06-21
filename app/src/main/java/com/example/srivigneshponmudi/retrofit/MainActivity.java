@@ -18,6 +18,7 @@ import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity {
+
     private RecyclerView mRecyclerView;
     private SOService mService;
     private AnswersAdapter mAdapter;

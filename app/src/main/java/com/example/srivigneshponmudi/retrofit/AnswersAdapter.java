@@ -29,7 +29,6 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.ViewHold
         public ViewHolder(View itemView, PostItemListener postItemListener) {
             super(itemView);
             titleTv = (TextView) itemView.findViewById(android.R.id.text1);
-
             this.mItemListener = postItemListener;
             itemView.setOnClickListener(this);
         }
